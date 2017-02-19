@@ -22,8 +22,7 @@ end
 b.text_field(id: 'email').set EMAIL
 b.text_field(id: 'password').set PASSWORD
 b.element(id: 'login-form-submit').button.click
-b.element(xpath: '//*[@id="deal-of-the-day"]/div/div/div[2]/div[4]/div[2]/a/d' \
-  'iv/input').click
+b.element(css: 'input[value="Claim Your Free eBook"]').click
 ebook_box = b.element xpath: '//*[@id="product-account-list"]/div[1]'
 ebook_box.click
 ebook_id = ebook_box.attribute_value 'nid'
