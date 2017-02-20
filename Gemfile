@@ -1,4 +1,7 @@
 source 'https://rubygems.org'
 gem 'chromedriver-helper'
-gem 'rubocop', require: false
 gem 'watir'
+
+group :development do
+  gem 'rubocop'
+end

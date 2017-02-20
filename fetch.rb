@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'watir'
 require './config.rb'
 
@@ -35,4 +37,4 @@ ebook_box.link(href: "/code_download/#{ebook_code_id}").click
 
 sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty?
 
-b.quit
+b.close
