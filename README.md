@@ -16,3 +16,9 @@ It is recommended to use [rbenv](https://github.com/rbenv/rbenv).
 Claim and download
 ------------------
 To claim and download todays free learning eBook run [`fetch.rb`](fetch.rb).
+
+
+Download destination
+--------------------
+By specifying a valid directory as `TARGET` in the configuration file, the
+directory containing the downloads gets moved into the target directory.

@@ -38,3 +38,5 @@ ebook_box.link(href: "/code_download/#{ebook_code_id}").click
 sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty?
 
 b.close
+
+FileUtils.mv download_directory, TARGET if Dir.exist? TARGET
