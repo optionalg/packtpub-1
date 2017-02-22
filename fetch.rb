@@ -43,7 +43,8 @@ download_links = download_links.select { |l| l.exist? }
 
 download_links.each { |l| l.click }
 
-sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty?
+sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
+  Dir["#{download_directory}/**/*"].length == download_links.length
 
 b.close
 
