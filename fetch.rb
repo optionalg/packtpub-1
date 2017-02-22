@@ -30,10 +30,18 @@ ebook_box.click
 ebook_id = ebook_box.attribute_value 'nid'
 ebook_code_id = ebook_box.link(css: '.kindle-link').attribute_value 'nid'
 
-ebook_box.link(href: "/ebook_download/#{ebook_id}/pdf").click
-ebook_box.link(href: "/ebook_download/#{ebook_id}/epub").click
-ebook_box.link(href: "/ebook_download/#{ebook_id}/mobi").click
-ebook_box.link(href: "/code_download/#{ebook_code_id}").click
+download_links = [
+  "/ebook_download/#{ebook_id}/pdf",
+  "/ebook_download/#{ebook_id}/epub",
+  "/ebook_download/#{ebook_id}/mobi",
+  "/code_download/#{ebook_code_id}"
+]
+
+download_links = download_links.map { |l| ebook_box.link href: l }
+
+download_links = download_links.select { |l| l.exist? }
+
+download_links.each { |l| l.click }
 
 sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty?
 
