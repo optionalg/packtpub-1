@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'watir'
-require './config.rb'
+require "#{__dir__}/config.rb"
 
-download_directory = "#{Dir.pwd}/downloads/#{Time.now.strftime('%Y-%m-%d')}"
+download_directory = "#{__dir__}/downloads/#{Time.now.strftime('%Y-%m-%d')}"
 download_directory.tr!('/', '\\') if Selenium::WebDriver::Platform.windows?
 
 profile = Selenium::WebDriver::Chrome::Profile.new
