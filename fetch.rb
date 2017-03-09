@@ -13,21 +13,9 @@ profile['download.default_directory'] = download_directory
 b = Watir::Browser.new :chrome, profile: profile
 b.goto 'https://www.packtpub.com/packt/offers/free-learning'
 
-sleep 2
-modal_indicator = b.element text: 'How do you learn?'
-if modal_indicator.exist?
-  modal_indicator.parent.element(css: 'span').click
-  sleep 1
+until b.text_field(id: 'email').visible?
+  b.element(css: 'input[value="Claim Your Free eBook"]').click
 end
-
-menu_icon = b.element id: 'menuIcon'
-if menu_icon.visible?
-  menu_icon.click
-  b.element(xpath: '//*[@id="ppv4"]/div[6]/div[1]/div[1]/div[1]').click
-else
-  b.element(xpath: '//*[@id="account-bar-login-register"]/a[1]').click
-end
-
 b.text_field(id: 'email').set EMAIL
 b.text_field(id: 'password').set PASSWORD
 b.element(id: 'login-form-submit').button.click
