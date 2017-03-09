@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 
+require 'pathname'
 require 'watir'
 require "#{__dir__}/config.rb"
 
 download_directory = "#{__dir__}/downloads/#{Time.now.strftime('%Y-%m-%d')}"
 download_directory.tr!('/', '\\') if Selenium::WebDriver::Platform.windows?
+Pathname.new(download_directory).rmtree if Dir.exist? download_directory
 
 profile = Selenium::WebDriver::Chrome::Profile.new
 profile['download.prompt_for_download'] = false
