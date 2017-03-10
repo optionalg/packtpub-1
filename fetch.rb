@@ -73,5 +73,6 @@ sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
 # Close browser
 b.close
 
-# Move downloads
-FileUtils.mv download_directory, TARGET if Dir.exist? TARGET
+# Move downloads if TARGET is valid
+FileUtils.mv download_directory, TARGET if Dir.exist?(TARGET) &&
+  !Dir.exist?(File.join TARGET, File.basename(download_directory))
