@@ -1,0 +1,5 @@
+Metrics/LineLength:
+  Enabled: true
+  Exclude:
+    - 'config.rb'
+    - 'config.example.rb'

@@ -1,17 +1,16 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'pathname'
 require 'watir'
 require "#{__dir__}/config.rb"
 
 def safe_click(e)
-  begin
-    retries ||= 0
-    e.click
-  rescue
-    clear_view e.browser
-    retry if (retries += 1) < 3
-  end
+  retries ||= 0
+  e.click
+rescue
+  clear_view e.browser
+  retry if (retries += 1) < 3
 end
 
 def clear_view(b)
@@ -26,7 +25,8 @@ def clear_view(b)
 end
 
 # Prepare downloads directory
-download_directory = "#{__dir__}/downloads/#{Time.now.getlocal('+00:00').strftime('%Y-%m-%d')}"
+download_directory_basename = Time.now.getlocal('+00:00').strftime('%Y-%m-%d')
+download_directory = "#{__dir__}/downloads/#{download_directory_basename}"
 download_directory.tr!('/', '\\') if Selenium::WebDriver::Platform.windows?
 Pathname.new(download_directory).rmtree if Dir.exist? download_directory
 profile = Selenium::WebDriver::Chrome::Profile.new
@@ -39,14 +39,13 @@ b.goto 'https://www.packtpub.com/packt/offers/free-learning'
 
 # Set browser width (to force mobile layout, otherwise login does not working)
 max_width = 1040
+b.window.size.width = max_width if b.window.size.width > max_width
 if b.window.size.width > max_width
-  b.window.size.width = max_width
-end
-if b.window.size.width > max_width
-  puts "Unable to set size automatically."
+  puts 'Unable to set size automatically.'
   while b.window.size.width > max_width
-    puts "Window must not be wider than #{max_width}. Please shrink the browser window by hand."
-    puts "Press enter to re-check."
+    puts "Window must not be wider than #{max_width}. Please shrink the" \
+      ' browser window by hand.'
+    puts 'Press enter to re-check.'
     gets
   end
 end
@@ -64,15 +63,16 @@ safe_click b.element(css: 'input[value="Claim Your Free eBook"]')
 first_product = b.elements(css: '#product-account-list .product-line').first
 first_product.click
 download_links = first_product.elements(css: '.fake-button-icon.download')
-download_links.each { |l| l.click }
+download_links.each(&:click)
 
 # Wait for downloads having finished
 sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
-  Dir["#{download_directory}/**/*"].length == download_links.length
+              Dir["#{download_directory}/**/*"].length == download_links.length
 
 # Close browser
 b.close
 
 # Move downloads if TARGET is valid
+absolute_target = File.join TARGET, download_directory_basename
 FileUtils.mv download_directory, TARGET if Dir.exist?(TARGET) &&
-  !Dir.exist?(File.join TARGET, File.basename(download_directory))
+                                           !Dir.exist?(absolute_target)
