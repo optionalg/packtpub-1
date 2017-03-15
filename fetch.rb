@@ -38,8 +38,10 @@ b = Watir::Browser.new :chrome, profile: profile
 b.goto 'https://www.packtpub.com/packt/offers/free-learning'
 
 # Set browser width (to force mobile layout, otherwise login does not working)
-max_width = 1040
-b.window.size.width = max_width if b.window.size.width > max_width
+max_width = 1000
+if b.window.size.width > max_width
+  b.window.resize_to(max_width, b.window.size.height)
+end
 if b.window.size.width > max_width
   puts 'Unable to set size automatically.'
   while b.window.size.width > max_width
