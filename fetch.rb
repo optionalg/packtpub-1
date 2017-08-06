@@ -43,12 +43,13 @@ download_directory_basename = Time.now.getlocal('+00:00').strftime('%Y-%m-%d')
 download_directory = "#{__dir__}/downloads/#{download_directory_basename}"
 download_directory.tr!('/', '\\') if Selenium::WebDriver::Platform.windows?
 Pathname.new(download_directory).rmtree if Dir.exist? download_directory
-profile = Selenium::WebDriver::Chrome::Profile.new
-profile['download.prompt_for_download'] = false
-profile['download.default_directory'] = download_directory
+profile = Selenium::WebDriver::Firefox::Profile.new
+profile['browser.download.folderList'] = 2
+profile['browser.download.dir'] = download_directory
+profile['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf,application/epub+zip,application/octet-stream,application/zip'
 
 # Open browser
-b = Watir::Browser.new :chrome, profile: profile
+b = Watir::Browser.new :firefox, profile: profile
 b.goto 'https://www.packtpub.com/packt/offers/free-learning'
 
 # Set browser width (to force mobile layout, otherwise login does not working)
@@ -89,7 +90,7 @@ if free_book_title == first_product_title
   download_links.each(&:click)
 
   # Wait for downloads to have finished
-  sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
+  sleep 3 until Dir["#{download_directory}/**/*.part"].empty? &&
                 Dir["#{download_directory}/**/*"].length == download_links.length
 else
   # Find matching product and get data
