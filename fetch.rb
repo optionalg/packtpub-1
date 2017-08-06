@@ -61,6 +61,11 @@ b.element(id: 'login-form-submit').button.click
 # Claim
 free_book_title = b.element(css: '.dotd-main-book-summary > .dotd-title > h2').text + ' [eBook]'
 safe_click b.element(css: 'input[value="Claim Your Free eBook"]')
+captcha_frame = b.element(css: 'iframe[title="recaptcha challenge"]')
+if captcha_frame.exist?
+  puts 'Captcha detected. Please solve first and then press enter'
+  gets
+end
 
 # Get title from first product
 first_product = b.elements(css: '#product-account-list .product-line').first
