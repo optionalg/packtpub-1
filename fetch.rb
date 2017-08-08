@@ -59,17 +59,33 @@ b.text_field(id: 'password').set PASSWORD
 b.element(id: 'login-form-submit').button.click
 
 # Claim
+free_book_title = b.element(css: '.dotd-main-book-summary > .dotd-title > h2').text + ' [eBook]'
 safe_click b.element(css: 'input[value="Claim Your Free eBook"]')
 
-# Download
+# Get title from first product
 first_product = b.elements(css: '#product-account-list .product-line').first
-first_product.click
-download_links = first_product.elements(css: '.fake-button-icon.download')
-download_links.each(&:click)
+first_product_title = first_product.attribute_value 'title'
 
-# Wait for downloads having finished
-sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
-              Dir["#{download_directory}/**/*"].length == download_links.length
+if free_book_title == first_product_title
+  # Download
+  first_product.click
+  download_links = first_product.elements(css: '.fake-button-icon.download')
+  download_links.each(&:click)
+
+  # Wait for downloads to have finished
+  sleep 3 until Dir["#{download_directory}/**/*.crdownload"].empty? &&
+                Dir["#{download_directory}/**/*"].length == download_links.length
+else
+  # Find matching product and get data
+  matching_product = b.elements(css: '#product-account-list .product-line[title="' + free_book_title + '"]').first
+  matching_product.click
+  matching_product_date = matching_product.elements(css: '.product-info .product-reference-table > tbody > tr:nth-child(2) > td:nth-child(3)').first.text
+  matching_product_date = Date.parse(matching_product_date).strftime('%Y-%m-%d')
+
+  # Create empty text file as reference
+  Pathname.new(download_directory).mkdir
+  File.write(Pathname.new(download_directory).join(matching_product_date + '.txt'), '')
+end
 
 # Close browser
 b.close
