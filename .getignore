@@ -2,3 +2,4 @@ config.rb
 downloads
 
 #==Ruby
+.byebug_history

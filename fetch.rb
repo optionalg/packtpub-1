@@ -24,6 +24,20 @@ def clear_view(b)
   end
 end
 
+def try(n = 5, &f)
+  r = nil
+  i = 0
+  loop do
+    sleep 1
+    r = f.call
+    break r unless r.nil?
+  end
+
+  raise "Maximum number of tries (#{n}) exceeded!" unless i < n
+
+  r
+end
+
 # Prepare downloads directory
 download_directory_basename = Time.now.getlocal('+00:00').strftime('%Y-%m-%d')
 download_directory = "#{__dir__}/downloads/#{download_directory_basename}"
@@ -63,7 +77,9 @@ free_book_title = b.element(css: '.dotd-main-book-summary > .dotd-title > h2').t
 safe_click b.element(css: 'input[value="Claim Your Free eBook"]')
 
 # Get title from first product
-first_product = b.elements(css: '#product-account-list .product-line').first
+first_product = try do
+  b.elements(css: '#product-account-list .product-line:first-child').first
+end
 first_product_title = first_product.attribute_value 'title'
 
 if free_book_title == first_product_title

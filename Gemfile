@@ -5,5 +5,6 @@ gem 'chromedriver-helper'
 gem 'watir'
 
 group :development do
+  gem 'byebug'
   gem 'rubocop'
 end
