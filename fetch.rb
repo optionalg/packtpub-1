@@ -47,7 +47,7 @@ Pathname.new(download_directory).rmtree if Dir.exist? download_directory
 profile = Selenium::WebDriver::Firefox::Profile.new
 profile['browser.download.folderList'] = 2
 profile['browser.download.dir'] = download_directory
-profile['browser.helperApps.neverAsk.saveToDisk'] = 'application/pdf,application/epub+zip,application/octet-stream,application/zip'
+profile['browser.helperApps.neverAsk.saveToDisk'] = 'text/csv,application/pdf,application/epub+zip,application/octet-stream,application/zip'
 
 # Open browser
 b = Watir::Browser.new :firefox, profile: profile
