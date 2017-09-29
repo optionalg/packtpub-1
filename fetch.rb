@@ -39,7 +39,8 @@ def try(n = 5, &f)
 end
 
 # Prepare downloads directory
-download_directory_basename = Time.now.getlocal('+00:00').strftime('%Y-%m-%d')
+now = Time.now.getlocal('+00:00')
+download_directory_basename = now.strftime('%Y-%m-%d')
 download_directory = "#{__dir__}/downloads/#{download_directory_basename}"
 download_directory.tr!('/', '\\') if Selenium::WebDriver::Platform.windows?
 Pathname.new(download_directory).rmtree if Dir.exist? download_directory
@@ -107,7 +108,15 @@ end
 # Close browser
 b.close
 
+# Possibly create sub target and update target
+target = if MONTHLY_SUB_TARGET
+  sub_target = Pathname.new(TARGET).join(now.strftime('%Y-%m'))
+  sub_target.mkdir if Dir.exist?(TARGET) && !Dir.exist?(sub_target)
+  sub_target.to_s
+else
+  TARGET
+end
 # Move downloads if TARGET is valid
-absolute_target = File.join TARGET, download_directory_basename
-FileUtils.mv download_directory, TARGET if Dir.exist?(TARGET) &&
+absolute_target = File.join target, download_directory_basename
+FileUtils.mv download_directory, target if Dir.exist?(target) &&
                                            !Dir.exist?(absolute_target)
